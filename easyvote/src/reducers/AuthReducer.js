@@ -58,11 +58,7 @@ export default (state = INITIAL_STATE , action) => {
     case 'LastFour_changed': 
         return {...state, fourD: action.payload};
 
-    case 'Elections':  
-        return {...state, Elections: action.payload};
-
-    case 'Candidate':
-        return {...state, Candidate: action.payload};
+    
 
 
 
@@ -88,9 +84,20 @@ export default (state = INITIAL_STATE , action) => {
     
     case 'Name_changed2': 
         return {...state, Name2: action.payload};
+
     case 'LoginUserDone':
-    
         return {...state,Active:action.payload, logintrigger:true};
+        
+    case 'Elections':
+        return {...state, Elections: action.payload, logintrigger:true};
+
+    case 'Candidate':
+        return {...state, Candidate: action.payload, logintrigger:true};    
+
+
+    case "InfoDone":
+        return {...state, Info: action.payload, logintrigger:true};  
+
     case 'LoginUserFail':
         return {...state,password:'', password2:'',codeone:"",Adstu:true,codetwo:"", ID2:'', error: action.payload, loading: false}; 
     case 'LoginUserFaill':

@@ -23,7 +23,7 @@ class ElectionsListForm extends Component {
      // const { navigate } = props.navigation;
         super(props);
       this.state = {
-        //Id:  this.props.navigation.state.params.Id,
+       //Id:  this.props.navigation.state.params.Id,
         navigate:this.props.navigation,
         profiles: [
           {
@@ -62,15 +62,20 @@ class ElectionsListForm extends Component {
    // this.props.Fetchelection({valll});
 }
 
-
+next(){
+  if(this.props.logintrigger){
+      this.props.navigation.navigate('CandidateList',{Id: this.props.Active});;
+  }
+}
 
   getProfiles(){
+    //return  this.props.Elections;
     return  this.state.profiles;
   }
     
 
   renderRow(item){
-    return <ProfileEditHomeicon  press = {this.state.navigate} place ={'CandidateList'}  Name = {item.Name} /> 
+    return <ProfileEditHomeicon  press = {this.state.navigate} Id = {this.props.Active} place ={'CandidateList'}  Name = {item.Name} /> 
       
           
    }
@@ -102,6 +107,7 @@ class ElectionsListForm extends Component {
         <HeaderSet2 place2={'ProfileEdit'} press = {this.props.navigation.navigate} place ={'SettingsEdit'}/>
 
       {this.renderButton()}
+     
       </SafeAreaView>
       );
   }
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
   });
 
   const mapStateToProps = state =>{
-  
+    
   // const elections = _.map(state.auth.Elections,(Val,uid) =>{
    //   return {...Val};
   //  });
@@ -135,4 +141,4 @@ const styles = StyleSheet.create({
   //return {elections,loading:state.pro.loading1};
   };
 
-export default  (ElectionsListForm) ; //connect(null,{Fetchelection})
+export default  (ElectionsListForm) ; //connect(mapStateToProps,{Fetchelection})

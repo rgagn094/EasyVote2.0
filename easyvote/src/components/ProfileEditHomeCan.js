@@ -29,7 +29,7 @@ class  ProfileEditHomeCan extends React.Component{
 
         return(
             // <Swipeout {...swipeSettings} >
-            <TouchableOpacity onPress={() =>{this.props.press.navigate('HomeCan', {FirstName:this.props.Name});}} style={styles.listStyle} >
+            <TouchableOpacity onPress={() =>{this.props.press.navigate('HomeCan', {Id: this.props.Id,FirstName:this.props.Name,});}} style={styles.listStyle} >
                 {this.renderImage()}
                 <View  /* style={{width:"80%"}} */>
                 <Text numberOfLines={1} style={{fontWeight:'bold', fontSize:18}}>

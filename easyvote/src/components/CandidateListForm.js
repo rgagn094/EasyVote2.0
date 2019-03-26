@@ -22,6 +22,8 @@ class CandidateListForm extends Component {
     constructor(props) {
         super(props);
       this.state = {
+        Id:  this.props.navigation.state.params.Id,
+        elecName:  this.props.navigation.state.params.Name,
         navigate:this.props.navigation,
         profiles: [
           {
@@ -69,19 +71,21 @@ class CandidateListForm extends Component {
 
       componentDidMount(){
         //let valll = this.state.Id;
-       // this.props.Fetchcandidate({valll});
+        //let elecName = this.state.elecName
+       // this.props.Fetchcandidate({valll,elecName});
     }
 
 
     
 
   getProfiles(){
+    //return  this.props.Candidate;
     return  this.state.profiles;
   }
     
 
   renderRow(item){
-    return <ProfileEditHomeCan press = {this.state.navigate} place ={'HomeCan'} Name = {item.Name} /> 
+    return <ProfileEditHomeCan press = {this.state.navigate} Id = {this.props.Active} place ={'HomeCan'} Name = {item.Name} /> 
     }
 
   renderButton(){ 
@@ -135,12 +139,12 @@ const styles = StyleSheet.create({
 
   const mapStateToProps = state =>{
   
-    const elections = _.map(state.auth.Elections,(Val,uid) =>{
+    const Candidate = _.map(state.auth.Candidate,(Val,uid) =>{
       return {...Val};
     });
   
   
-  return {elections,loading:state.pro.loading1};
+  return {Candidate,loading:state.pro.loading1};
   };
 
-export default CandidateListForm; //connect(mapStateToProps,{Fetchcandidate})(ElectionsListForm) ;
+export default CandidateListForm; //connect(mapStateToProps,{Fetchcandidate})(CandidateListForm);

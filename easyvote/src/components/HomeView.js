@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import {Header} from './Header';
 import {HomeHeader2} from './index';
 import {connect} from 'react-redux';
-import {chanegepic,SubTinfo,SaveInfo} from '../actions';
+import {candidateInfo,sendVote} from '../actions';
 import { AsyncStorage } from "react-native"
 //import Myimage from '../.././images/p.png';
 
@@ -22,7 +22,28 @@ class HomeView extends Component {
 
     state = {
         FirstName:  this.props.navigation.state.params.FirstName,
+        Id:  this.props.navigation.state.params.Id
     } 
+
+
+    componentDidMount(){
+      //let valll = this.state.Id;
+     // this.props.candidateInfo({valll});
+  }
+
+
+  next(){
+    if(this.props.logintrigger){
+        this.props.navigation.navigate('LogOrSign');;
+    }
+}
+
+
+  onButtonPress(){
+    //let valll = this.state.Id;
+     // this.props.sendVote({valll});
+    
+   }
 
     
 
@@ -50,8 +71,8 @@ class HomeView extends Component {
               
               <Text  style={{ width:'96%',alignSelf:"center", padding:12, marginTop:2, marginBottom:10, fontSize:20}}>Vote For Me</Text>
           
-<Button title="VOTE"/>
-                
+<Button onPress={this.onButtonPress.bind(this)} title="VOTE"/>
+{this.next()}
              </SafeAreaView>
             );
           }
@@ -64,7 +85,7 @@ const styles = StyleSheet.create({
     container: {
       flex:1,
       alignItems:'center',
-      backgroundColor: '#A1D6E2',
+      backgroundColor: 'white',
       //justifyContent:'space-between',
       flexDirection:'column',
     },
@@ -84,7 +105,7 @@ const styles = StyleSheet.create({
       width:'100%',
       //height:'10%',
       borderBottomWidth:1,
-      borderColor:"#1995ad"
+      borderColor:"white"
   }
   
     
@@ -93,10 +114,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = state =>{
     return{
        
-       loading: state.pro.loading1,
-       Vals: state.pro.infol,
-       hope:state.pro.hope
+      // loading: state.auth.loading1,
+      // Vals: state.auth.infol,
+      // hope:state.auth.hope,
+      //
      }
   };
 
-export default connect(mapStateToProps,{chanegepic,SubTinfo,SaveInfo})(HomeView);
+export default connect(mapStateToProps,{candidateInfo,sendVote})(HomeView);

@@ -33,7 +33,7 @@ class LoginFormtwo extends Component {
 
   next(){
     if(this.props.logintrigger){
-        this.props.navigation.navigate('Profile');
+        this.props.navigation.navigate('Profile',{Id: this.props.Active});;
     }
 }
 
@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
        Licence:state.auth.Licence,
        fourD:state.auth.fourD,
        logintrigger:state.auth.logintrigger,
+       Active:state.auth.Active,
        
        
     }

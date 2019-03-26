@@ -180,19 +180,21 @@ export const FirstNameChanged = (text) => {
                     
                         
 
-                        /* export const Fetchcandidate = () => {
+                         export const Fetchcandidate = ({valll,elecName}) => {
     
                                 return (dispatch) => {
                                 dispatch({type: 'Login_user'});
                             
                                 
-                                fetch('http://127.0.0.1:8000/election/list', {
+                                fetch('http://127.0.0.1:8000/candidate/list', {
                                 method: 'POST',
                                 headers: {
                                     'Accept': 'application/json',
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
+                                electionBodyID:valll,
+                                electionName:elecName
                                      
                                   }),
                                 }).then((response) => response.json()).then(Candidate => {
@@ -203,12 +205,12 @@ export const FirstNameChanged = (text) => {
                                 });
                                
                               };
-                            }; */
+                            }; 
 
 
 
 
-                    export const Fetchelection = () => {
+                    export const Fetchelection = ({valll}) => {
     
                             return (dispatch) => {
                             dispatch({type: 'Login_user'});
@@ -221,8 +223,8 @@ export const FirstNameChanged = (text) => {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                 
-                              }),
+                            electionBodyID:valll
+                              }),
                             }).then((response) => response.json()).then(Elections => {
                           
                                dispatch({type: 'Elections', payload: Elections});
@@ -233,7 +235,79 @@ export const FirstNameChanged = (text) => {
                           };
                         };
 
+                        export const candidateInfo = ({valll}) => {
+    
+                                return (dispatch) => {
+                                dispatch({type: 'Login_user'});
+                            
+                                fetch('http://127.0.0.1:8000/fetchinfo/verify', {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    Id:valll
+                                                                                                                                                                                                                                                    }),
+                                }).then((response) => response.json()).then(response => {
+                               if( !response.errors ){
+    
+                                   dispatch({type: 'InfoDone', payload: response.message});
+                                }
+                               else{
+                                  dispatch({type: 'LoginUserFail', payload: response});
+                                }
+                                
+                                });
+                               
+                              };
+                            };
+
+
+                            export const sendVote = ({valll}) => {
+    
+                                    return (dispatch) => {
+                                    dispatch({type: 'Login_user'});
+                                
+                                    fetch('http://127.0.0.1:8000/fetchinfo/verify', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        Id:valll
+                                                                                                                                                                                                                                                        }),
+                                    }).then((response) => response.json()).then(response => {
+                                   if( !response.errors ){
+        
+                                       dispatch({type: 'LoginUserDone', payload: response.message});
+                                    }
+                                   else{
+                                      dispatch({type: 'LoginUserFail', payload: response});
+                                    }
+                                    
+                                    });
+                                   
+                                  };
+                                };
+
+                            
                         
+                        
+
+                        
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -21,7 +21,7 @@ class Twofactorform extends Component {
 
     next(){
         if(this.props.logintrigger){
-            this.props.navigation.navigate('Profile');
+            this.props.navigation.navigate('Profile',{Id: this.props.Active});
         }
     }
 
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
   const mapStateToProps = state =>{
     return{
        email: state.auth.email,
+       Active:state.auth.Active,
         logintrigger:state.auth.logintrigger,
       
        }

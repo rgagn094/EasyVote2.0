@@ -31,7 +31,7 @@ class  ProfileEditHomeicon extends React.Component{
 
         return(
             // <Swipeout {...swipeSettings} >
-            <TouchableOpacity onPress={() =>{this.props.press.navigate(this.props.place)}} style={styles.listStyle} >
+            <TouchableOpacity onPress={() =>{this.props.press.navigate(this.props.place,{Id: this.props.Id,Name:this.props.Name})}} style={styles.listStyle} >
                 {this.renderImage()}
                 <View  /* style={{width:"80%"}} */>
                 <Text numberOfLines={1} style={{fontWeight:'bold', fontSize:18}}>
