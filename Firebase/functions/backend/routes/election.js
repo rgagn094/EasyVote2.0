@@ -55,6 +55,15 @@ router.post('/create', function(req,res){
 
             newElection.title = req.body.title;
             newElection.candidates = req.body.candidates;//List of candidates and their details
+            // Capitalize first letters of names
+            for(i = 0; i < newElection.candidates.length; i++){
+              let string1 = newElection.candidates[i].firstName;
+              let string2 = newElection.candidates[i].lastName;
+              string1 = string1.charAt(0).toUpperCase() + string1.slice(1);
+              string2 = string2.charAt(0).toUpperCase() + string2.slice(1);
+              newElection.candidates[i].firstName = string1;
+              newElection.candidates[i].lastName = string2;
+            }
             newElection.startDate = req.body.startDate;
             newElection.expiryDate = req.body.expiryDate;
             newElection.image = req.body.image;

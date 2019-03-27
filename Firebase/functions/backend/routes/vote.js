@@ -60,7 +60,7 @@ router.post('/cast/:electionID/:userID', function(req,res){
           let ipInfo = geoip.allData(ip);
 
           newVote.hashedID = encrypted;
-          newVote.candidate = req.body.candidate;
+          newVote.candidate = req.body.candidate.toLowerCase();
           newVote.geoLocation = ipInfo.location;
           newVote.demographics.country = ipInfo.country;
           newVote.demographics.continent = ipInfo.continent;
