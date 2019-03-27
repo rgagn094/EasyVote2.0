@@ -4,6 +4,7 @@ const User = require('../models/user');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const geoip = require('geo-from-ip');
+var path = require('path');
 
 function calculateAge(birthDate){
   var diff = Date.now() - birthDate.getTime();
@@ -53,7 +54,7 @@ router.post('/cast/:electionID/:userID', function(req,res){
         }else{
           //Create new vote
           let newVote = new Vote();
-          let ip = req.headers['x-appengine-user-ip'] ||
+          let ip = req.headers['fastly-client-ip'] ||
              req.connection.remoteAddress ||
              req.socket.remoteAddress ||
              (req.connection.socket ? req.connection.socket.remoteAddress : null);
@@ -99,7 +100,7 @@ router.post('/cast/:electionID/:userID', function(req,res){
                       //text: 'Thank you for voting with EasyVote!\n', // plain text body
                       html: '<b>Thank you for using EasyVote!<br>'+
                       'Please click on the link below to authenticate your vote</b><br>'+
-                      'localhost:8000/vote/authenticate/'+ newVote.hashedID// html body
+                      'https://easyvote-f20bf.firebaseapp.com/vote/authenticate/'+ newVote.hashedID// html body
                   };
                 transporter.sendMail(mailOptions, (error, info) => {
                   if (error) {
@@ -170,13 +171,18 @@ router.get('/authenticate/:hashedID', function(req,res){
   Vote.updateOne({hashedID: req.params.hashedID}, {$set: {authenticated: true}}, function(err, vote){
     if(err){
       console.log(err);
-      res.status(500).send();
+      res.status(500);
+      res.sendFile(path.join(__dirname + '../../..' +  '/assets/500.html'));
     }else if (!vote ){
       console.log("Vote not found");
-      res.status(404).send();
+      res.status(404);
+      res.sendFile(path.join(__dirname + '../../..' + '/assets/404.html'));
     }else{
       console.log("Vote has been authenticated successfully");
-      res.status(200).send("Vote has been authenticated!");
+      if (req.accepts('html')) {
+        res.status(200);
+        res.sendFile(path.join(__dirname + '../../..' + '/assets/authenticated.html'));
+      }
     }
   });
 });
