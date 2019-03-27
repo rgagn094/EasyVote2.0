@@ -103,10 +103,10 @@ router.post('/verify', async (req,res)=>{
 	}
 	let requestID = user.meta.tokenPasscode;
 	//verify PIN
-	if(verificationMethod === '1'){
+	if(verificationMethod === '0'){
 
 	}
-	else if (verificationMethod === "0"){ //phoneVerification
+	else if (verificationMethod === "1"){ //phoneVerification
 		nexmo.verify.check({requestID, pin}, (err,result)=>{
 			if (err){
 				//error
