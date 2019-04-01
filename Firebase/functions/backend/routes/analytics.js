@@ -84,6 +84,7 @@ router.get('/:electionID/:tag', async function(req,res){
       await asyncForEach(election.candidates,async function(candidate){
         // Get all votes for each candidate
         var name = candidate.firstName + ' ' + candidate.lastName;
+        name = name.toLowerCase()
         try{
           let votes = await Vote.find({electionID: req.params.electionID, candidate: name, authenticated: true}).exec();
           console.log("Total number of votes found: %d", votes.length);
