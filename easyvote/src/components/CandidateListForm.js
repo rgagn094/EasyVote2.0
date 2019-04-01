@@ -23,7 +23,9 @@ class CandidateListForm extends Component {
         super(props);
       this.state = {
         Id:  this.props.navigation.state.params.Id,
+        UserId:this.props.navigation.state.params.UserId,
         elecName:  this.props.navigation.state.params.Name,
+        Candidates:  this.props.navigation.state.params.Candidates,
         navigate:this.props.navigation,
         profiles: [
           {
@@ -70,7 +72,9 @@ class CandidateListForm extends Component {
 
 
       componentDidMount(){
-        //let valll = this.state.Id;
+        let valll = this.state.Id;
+        console.log(valll);
+        
         //let elecName = this.state.elecName
        // this.props.Fetchcandidate({valll,elecName});
     }
@@ -80,12 +84,12 @@ class CandidateListForm extends Component {
 
   getProfiles(){
     //return  this.props.Candidate;
-    return  this.state.profiles;
+    return  this.state.Candidates;
   }
     
 
   renderRow(item){
-    return <ProfileEditHomeCan press = {this.state.navigate} Id = {this.props.Active} place ={'HomeCan'} Name = {item.Name} /> 
+    return <ProfileEditHomeCan press = {this.state.navigate} CanId = {item._id} UserId={this.state.UserId} ElecId = {this.state.Id} place ={'HomeCan'} description={item.description} image={item.image} Name = {item.firstName+" "+item.lastName} /> 
     }
 
   renderButton(){ 

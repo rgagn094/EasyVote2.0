@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 //import {Header} from './Header';
-import {HomeHeader2} from './index';
+import {HomeHeader2,Spinner} from './index';
 import {connect} from 'react-redux';
 import {candidateInfo,sendVote} from '../actions';
 import { AsyncStorage } from "react-native"
@@ -22,26 +22,38 @@ class HomeView extends Component {
 
     state = {
         FirstName:  this.props.navigation.state.params.FirstName,
-        Id:  this.props.navigation.state.params.Id
+        CanId:  this.props.navigation.state.params.CanId,
+        ElecId:  this.props.navigation.state.params.ElecId,
+        UserId: this.props.navigation.state.params.UserId,
+        description:this.props.navigation.state.params.description,
+        image:this.props.navigation.state.params.image,
     } 
 
 
     componentDidMount(){
-      //let valll = this.state.Id;
-     // this.props.candidateInfo({valll});
-  }
+     // console.log(this.state.image);
+    }
 
 
   next(){
     if(this.props.logintrigger){
-        this.props.navigation.navigate('LogOrSign');;
+        this.props.navigation.navigate('Profile',{Id: this.state.UserId});;
     }
+}
+
+renderButton(){
+  if(this.props.loading){
+   return <Spinner size="small"/>;
+ }
+ else{ 
+  return <Button onPress={this.onButtonPress.bind(this)} title="VOTE"/>
+ }
 }
 
 
   onButtonPress(){
-    //let valll = this.state.Id;
-     // this.props.sendVote({valll});
+    const {CanId,ElecId,FirstName,UserId} = this.state;
+    this.props.sendVote({CanId,ElecId,FirstName,UserId});
     
    }
 
@@ -54,24 +66,22 @@ class HomeView extends Component {
             
             <HomeHeader2 place2={'ProfileEdit'} ti={this.state.FirstName}  navigate={this.props.navigation.goBack}/>
               
-
-            <Image
-                style={{height: 200, width:200, marginTop:30, borderRadius:100}}
-                source={require('../.././images/profile.png')}
-                resizeMode = 'contain'
-                />
+              <Image
+                    style={{height: 200,marginBottom:20,marginTop:20, width:200,borderRadius: Platform.OS === 'ios' ? 100 : 50}}
+                    source={{uri:this.state.image}}
+                    resizeMode = 'contain'
+                    />
 
         
-             <Text style={{width:'96%',alignSelf:"center", padding:12, marginTop:2,fontSize:15}}>
-             This is where you add content to your subject First, name the subject element eg Classwork1 , Homework1</Text>
+            
               
-              <Text style={{width:'96%',alignSelf:"center", padding:12, paddingTop:2, fontSize:15}}>then enter how much out of the total grade the element is worth. Total mark does not have to be out of 100
-           DO NOT GIVE ELEMENTS THE SAME NAME</Text>
+              <Text style={{width:'96%',alignSelf:"center", padding:12, paddingTop:2, fontSize:15}}>{this.state.description}</Text>
              
               
               <Text  style={{ width:'96%',alignSelf:"center", padding:12, marginTop:2, marginBottom:10, fontSize:20}}>Vote For Me</Text>
           
-<Button onPress={this.onButtonPress.bind(this)} title="VOTE"/>
+
+{this.renderButton()}
 {this.next()}
              </SafeAreaView>
             );
@@ -114,10 +124,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = state =>{
     return{
        
-      // loading: state.auth.loading1,
+      loading:state.auth.loading,
       // Vals: state.auth.infol,
       // hope:state.auth.hope,
       //
+      logintrigger:state.auth.logintrigger,
      }
   };
 

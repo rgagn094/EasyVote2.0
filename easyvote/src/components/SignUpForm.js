@@ -22,7 +22,7 @@ class SignUpForm extends Component {
           if(this.props.logintrigger){
              const {Active} = this.props;
               AsyncStorage.setItem('ID',JSON.stringify(Active));
-              this.props.navigation.navigate('TwoF');
+              this.props.navigation.navigate('TwoF',{Id: this.props.Active});
           }
       }
 
@@ -35,9 +35,9 @@ class SignUpForm extends Component {
      } 
 
      onButtonPress(){
-         this.props.navigation.navigate('Profile');
-       //const {email,password} = this.props; chnage back
-      //this.props.login({email,password}); change bak
+        // this.props.navigation.navigate('Profile');
+       const {email,password} = this.props;
+      this.props.login({email,password}); 
       
      }
 
@@ -52,12 +52,12 @@ class SignUpForm extends Component {
   } */
 
   renderButton(){
-    /* if(this.props.loading){
-      return <Spinner size="large"/>;
+     if(this.props.loading){
+      return <Spinner size="small"/>;
     }
-    else{ */
-     return <FormButton /*press={this.onButtonPress.bind(this)}*/ val = {"Login"}/>;
-   // }
+    else{ 
+     return <ForwardButton press={this.onButtonPress.bind(this)} place ={'TwoF'}/>
+    }
   }
 
   render() {
@@ -92,7 +92,7 @@ class SignUpForm extends Component {
             {this.next()}
        {/* </View> */}
        <View >
-      <ForwardButton press={this.onButtonPress.bind(this)} place ={'TwoF'}/>
+      {this.renderButton()}
        
        </View>
        </View>
@@ -133,7 +133,8 @@ const styles = StyleSheet.create({
        email: state.auth.email,
        password: state.auth.password,
         logintrigger:state.auth.logintrigger,
-        Active:state.auth.Active
+        Active:state.auth.Active,
+        loading:state.auth.loading
        }
 };
 

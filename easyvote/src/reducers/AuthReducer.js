@@ -86,10 +86,10 @@ export default (state = INITIAL_STATE , action) => {
         return {...state, Name2: action.payload};
 
     case 'LoginUserDone':
-        return {...state,Active:action.payload, logintrigger:true};
+        return {...state,Active:action.payload,loading: false, logintrigger:true};
         
     case 'Elections':
-        return {...state, Elections: action.payload, logintrigger:true};
+        return {...state, Elections: action.payload,loading: false,  logintrigger:true};
 
     case 'Candidate':
         return {...state, Candidate: action.payload, logintrigger:true};    

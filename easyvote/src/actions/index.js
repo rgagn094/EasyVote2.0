@@ -76,7 +76,7 @@ export const FirstNameChanged = (text) => {
                         //     
                         //     else{
                                 
-                            fetch('http://127.0.0.1:8000/user/login', {
+                            fetch('https://easyvote-f20bf.firebaseapp.com/user/login', {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
@@ -90,10 +90,10 @@ export const FirstNameChanged = (text) => {
                             }).then((response) =>{
                                 
                            if( response){
-                               dispatch({type: 'LoginUserDone', payload: "5bff32f01b25460a89800c8b"});
+                               dispatch({type: 'LoginUserDone', payload: response._bodyInit});
                             }
                            else{
-                              dispatch({type: 'LoginUserDone', payload: "5bff32f01b25460a89800c8b"});
+                              dispatch({type: 'LoginUserDone', payload: response});
                             }
                             
                             });
@@ -114,7 +114,7 @@ export const FirstNameChanged = (text) => {
                     //     
                     //     else{
                             
-                        fetch('http://127.0.0.1:8000/user/register', {
+                        fetch('https://easyvote-f20bf.firebaseapp.com/user/register', {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
@@ -145,13 +145,13 @@ export const FirstNameChanged = (text) => {
                      // };
                     };
 
-                    export const authcheck = ({email,value}) => {
+                    export const authcheck = ({email,Id}) => {
     
                             return (dispatch) => {
                             dispatch({type: 'Login_user'});
                         
                             
-                            fetch('http://127.0.0.1:8000/user/verify', {
+                            fetch('https://easyvote-f20bf.firebaseapp.com/user/verify', {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
@@ -159,17 +159,14 @@ export const FirstNameChanged = (text) => {
                             },
                             body: JSON.stringify({
                                  pin:email,
-                                userID:value,
+                                userID:Id,
                                 verificationMethod: 1
                                                                                                                                                                                                                                                 }),
                             }).then((response) => response.json()).then(response => {
-                           if( !response.errors ){
+                           
 
-                               dispatch({type: 'LoginUserDone', payload: response.message});
-                            }
-                           else{
-                              dispatch({type: 'LoginUserFail', payload: response});
-                            }
+                               dispatch({type: 'LoginUserDone', payload: response});
+                            
                             
                             });
                            
@@ -210,24 +207,24 @@ export const FirstNameChanged = (text) => {
 
 
 
-                    export const Fetchelection = ({valll}) => {
+                    export const Fetchelection = () => {
     
                             return (dispatch) => {
                             dispatch({type: 'Login_user'});
                         
                             
-                            fetch('http://127.0.0.1:8000/election/list', {
-                            method: 'POST',
+                            fetch('https://easyvote-f20bf.firebaseapp.com/election/list', {
+                            method: 'GET',
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({
-                            electionBodyID:valll
-                              }),
-                            }).then((response) => response.json()).then(Elections => {
+                            /* body: JSON.stringify({
+                            //electionBodyID:valll
+                              }), */
+                            }).then((response) => response.json()).then(response => {
                           
-                               dispatch({type: 'Elections', payload: Elections});
+                               dispatch({type: 'Elections', payload: response});
                             
                             
                             });
@@ -264,24 +261,24 @@ export const FirstNameChanged = (text) => {
                             };
 
 
-                            export const sendVote = ({valll}) => {
+                            export const sendVote = ({CanId,ElecId,FirstName,UserId}) => {
     
                                     return (dispatch) => {
                                     dispatch({type: 'Login_user'});
                                 
-                                    fetch('http://127.0.0.1:8000/fetchinfo/verify', {
+                                    fetch('https://easyvote-f20bf.firebaseapp.com/vote/cast/'+ElecId+'/'+UserId, {
                                     method: 'POST',
                                     headers: {
                                         'Accept': 'application/json',
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        Id:valll
+                                        candidate:FirstName
                                                                                                                                                                                                                                                         }),
                                     }).then((response) => response.json()).then(response => {
                                    if( !response.errors ){
         
-                                       dispatch({type: 'LoginUserDone', payload: response.message});
+                                       dispatch({type: 'LoginUserDone', payload: response});
                                     }
                                    else{
                                       dispatch({type: 'LoginUserFail', payload: response});

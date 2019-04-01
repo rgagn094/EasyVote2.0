@@ -18,10 +18,14 @@ import {
 
 class Twofactorform extends Component {
 
+  state = {
+    //FirstName:  this.props.navigation.state.params.FirstName,
+    Id:  this.props.navigation.state.params.Id
+} 
 
     next(){
         if(this.props.logintrigger){
-            this.props.navigation.navigate('Profile',{Id: this.props.Active});
+            this.props.navigation.navigate('Profile',{Id: this.state.Id});
         }
     }
 
@@ -33,12 +37,16 @@ class Twofactorform extends Component {
    
 
      onButtonPress(){
-       const {email} = this.props;
-       AsyncStorage.getItem('ID').then((value)=>{
-           this.props.authcheck({email,value});
+        const {email} = this.props;
+        const {Id} = this.state;
+        
+        
+      /*  AsyncStorage.getItem('ID').then((value)=>{
+        console.log(email,Id);
+          this.props.authcheck({email,Id});
        }).done();
-
-      
+ */
+      this.props.navigation.navigate('Profile',{Id: this.state.Id});
      }
 
    /* renderError(){
@@ -50,7 +58,8 @@ class Twofactorform extends Component {
       );
     }
   } */
-
+//5bff32f01b25460a89800c8b
+//Ben.rem@gamil.com
   renderButton(){
     /* if(this.props.loading){
       return <Spinner size="large"/>;
@@ -70,7 +79,7 @@ class Twofactorform extends Component {
         <View>
        
         <View style = {styles.viewStyle}>
-        <Text style={{alignSelf:'center',fontSize:25, color:'#1f3f54'}}>Enter the 6 digit Verification </Text>
+        <Text style={{alignSelf:'center',fontSize:25, color:'#1f3f54'}}>Enter the 4 digit Verification </Text>
         <Text style={{alignSelf:'center',fontSize:25,color:'#1F3F54'}}>Code sent to your email</Text>
         </View>
 
