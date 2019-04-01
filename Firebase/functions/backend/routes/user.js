@@ -209,7 +209,14 @@ router.post('/register', [
 	const saltRounds = 13;
 	let hash = bcrypt.hashSync(password,saltRounds);
 
-
+  // Simulate receiving age and gender from gov. server
+  if (Date.now() % 2) {
+    gender = 'male';
+  } else {
+    gender = 'female';
+  }
+  birthDate = new Date("1989-03-25T12:00:00Z");
+  
 	//TODO: get meta data for user
 
 	/*

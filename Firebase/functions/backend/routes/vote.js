@@ -33,7 +33,8 @@ router.post('/cast/:electionID/:userID', function(req,res){
       //Check voter's age
       let age = calculateAge(user.demographics.birthDate);
       if(age < 18){
-        res.status(403).send("Unfortunately you have not reached the required voting age");
+        res.status(403).json({error: "Unfortunately you have not reached the required voting age"});
+        return;
       }
 
       //Check if user has already voted
@@ -50,7 +51,7 @@ router.post('/cast/:electionID/:userID', function(req,res){
           console.log(err);
           res.status(500).send();
         }else if(data){
-          res.status(403).send("Unfortunately you have already voted in this election");
+          res.status(403).json({error: "Unfortunately you have already voted in this election"});
         }else{
           //Create new vote
           let newVote = new Vote();
