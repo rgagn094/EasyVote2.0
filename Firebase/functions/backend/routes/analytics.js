@@ -178,39 +178,30 @@ router.get('/:electionID/:tag', async function(req,res){
 
     case "province":
       let provinceMap = new Map();
-      provinceMap.set("BC",0);
-      provinceMap.set("AB",0);
-      provinceMap.set("SK",0);
-      provinceMap.set("MB",0);
-      provinceMap.set("ON",0);
-      provinceMap.set("QC",0);
-      provinceMap.set("NB",0);
-      provinceMap.set("NS",0);
-      provinceMap.set("PE",0);
-      provinceMap.set("NL",0);
-      provinceMap.set("YT",0);
-      provinceMap.set("NT",0);
-      provinceMap.set("NU",0);
+      provinceMap.set("British Columbia",0);
+      provinceMap.set("Alberta",0);
+      provinceMap.set("Saskatchewan",0);
+      provinceMap.set("Manitoba",0);
+      provinceMap.set("Ontario",0);
+      provinceMap.set("Quebec",0);
+      provinceMap.set("New Brunswick",0);
+      provinceMap.set("Nova Scotia",0);
+      provinceMap.set("Prince Edward Island",0);
+      provinceMap.set("Newfoundland",0);
+      provinceMap.set("Yukonk",0);
+      provinceMap.set("Northwest Territories",0);
+      provinceMap.set("Nunavut",0);
 
-      description = "Number of voters from top 5 most voted from provinces and territories";
+      description = "Number of voters from provinces and territories";
       try{
         let votes = await Vote.find({electionID: req.params.electionID, authenticated: true}).exec();
         for (let index = 0; index < votes.length; index++){   // Count votes for each province
-          let code = votes[index].locationCode.state;
-          provinceMap.set(code,(provinceMap.get(code)+1));
+          let state = votes[index].demographics.state;
+          provinceMap.set(state,(provinceMap.get(state)+1));
         }
-        for (let count = 0; count < 5; count++){
-          var highestKey = "";
-          var highestValue = -1;
-          for (var [key, value] of provinceMap.entries()){
-            if(value > highestValue){
-              highestValue = value;
-              highestKey = key;
-            }
-          }
-          data.push(highestValue);
-          labels.push(highestKey);
-          provinceMap.delete(highestKey);
+        for (var [key, value] of provinceMap.entries()){
+          data.push(value);
+          labels.push(key);
         }
         console.log(data);
         console.log(labels);
