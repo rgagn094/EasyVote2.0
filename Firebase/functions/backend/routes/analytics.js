@@ -22,6 +22,7 @@ tags:
   avgAge:   Returns the average age of the voters for each candidate
   ageGroup: Returns the number of voters for each age group (18-24, 25-44, 45-64, 65+)
   province: Returns the number of voters of the top 5 most voted from provinces or territory
+  cities:   Returns the number of votes from each city
 */
 router.get('/:electionID/:tag', async function(req,res){
   console.log("Request recevied for analytic");
@@ -44,7 +45,7 @@ router.get('/:electionID/:tag', async function(req,res){
   }
 
   // Check if election is closed ie: all votes submitted
-  if(req.tag == "count" || req.tag == "gender" || req.tag == "avgAge"){
+  if(req.tag == "countByCandidate" || req.tag == "gender" || req.tag == "avgAge"){
     if(election.endDate.getTime() > Date.now()){
       console.log("Cannot provide this analytic until end of voting:", election.endDate);
       res.status(400).send();
@@ -91,6 +92,7 @@ router.get('/:electionID/:tag', async function(req,res){
         return;
       }
       break;
+
     case "countByCandidate":
       description = "Total number of votes received by each candidate";
       // For all candidates
@@ -200,8 +202,8 @@ router.get('/:electionID/:tag', async function(req,res){
       provinceMap.set("New Brunswick",0);
       provinceMap.set("Nova Scotia",0);
       provinceMap.set("Prince Edward Island",0);
-      provinceMap.set("Newfoundland",0);
-      provinceMap.set("Yukonk",0);
+      provinceMap.set("Newfoundland and Labrador",0);
+      provinceMap.set("Yukon",0);
       provinceMap.set("Northwest Territories",0);
       provinceMap.set("Nunavut",0);
 
@@ -218,6 +220,30 @@ router.get('/:electionID/:tag', async function(req,res){
         }
         console.log(data);
         console.log(labels);
+      } catch(err){
+        console.log(err);
+        res.status(500).send();
+        return;
+      }
+      break;
+
+    case "cities":
+      let cityMap = new Map();
+      description = "Number of votes from each city";
+      try{
+        let votes = await Vote.find({electionID: req.params.electionID, authenticated: true}).exec();
+	for (let index = 0; index < votes.length; index++){
+          let city = votes[index].demographics.city;
+          if (typeof cityMap.get(city) == 'undefined'){
+            cityMap.set(city, 0);
+          } else {
+            cityMap.set(city, (cityMap.get(city)+1));
+          }
+        }
+        for (var [key, value] of cityMap.entries()){
+          data.push(value);
+          labels.push(key);
+        }
       } catch(err){
         console.log(err);
         res.status(500).send();
