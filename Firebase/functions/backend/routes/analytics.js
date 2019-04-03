@@ -16,7 +16,8 @@ async function asyncForEach(array, callback){
 /*
 Get analytics for a particular election
 tags:
-  count:    Returns the total number of votes for each candidate
+  count:          Returns total votes received
+  countByCandidate:    Returns the total number of votes for each candidate
   gender:   Returns the votes by gender for each candidate
   avgAge:   Returns the average age of the voters for each candidate
   ageGroup: Returns the number of voters for each age group (18-24, 25-44, 45-64, 65+)
@@ -79,6 +80,18 @@ router.get('/:electionID/:tag', async function(req,res){
 
   switch(req.params.tag){
     case "count":
+      description = "Total number of votes received";
+      try{
+        let votes = await Vote.find({electionID: req.params.electionID, authenticated: true}).exec();
+        data.push(votes.length);
+        labels.push("Total Votes Received");
+      } catch(err){
+        console.log(err);
+        res.status(500).send();
+        return;
+      }
+      break;
+    case "countByCandidate":
       description = "Total number of votes received by each candidate";
       // For all candidates
       await asyncForEach(election.candidates,async function(candidate){
