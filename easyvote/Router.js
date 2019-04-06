@@ -18,7 +18,10 @@ export const Router = StackNavigator({
     LogOrSign:{screen:LogOrSign},
     SignUp:{screen:SignUp},
     TwoF:{screen:TwoF},
-    Login: { screen: Login },
+    Login: { screen: Login , navigationOptions: {
+        gesturesEnabled: false,
+        headerLeft:null
+    },},
     Logintwo:{screen: Logintwo},
     Security:{screen:Security},
     Profile:{screen:Profile},

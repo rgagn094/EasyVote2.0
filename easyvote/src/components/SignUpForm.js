@@ -22,7 +22,7 @@ class SignUpForm extends Component {
           if(this.props.logintrigger){
              const {Active} = this.props;
               AsyncStorage.setItem('ID',JSON.stringify(Active));
-              this.props.navigation.navigate('TwoF');
+              this.props.navigation.navigate('TwoF',{Id: this.props.Active});
           }
       }
 
@@ -35,9 +35,9 @@ class SignUpForm extends Component {
      } 
 
      onButtonPress(){
-         this.props.navigation.navigate('Profile');
-       //const {email,password} = this.props; chnage back
-      //this.props.login({email,password}); change bak
+        // this.props.navigation.navigate('Profile');
+       const {email,password} = this.props;
+      this.props.login({email,password}); 
       
      }
 
@@ -52,12 +52,12 @@ class SignUpForm extends Component {
   } */
 
   renderButton(){
-    /* if(this.props.loading){
-      return <Spinner size="large"/>;
+     if(this.props.loading){
+      return <Spinner size="small"/>;
     }
-    else{ */
-     return <FormButton /*press={this.onButtonPress.bind(this)}*/ val = {"Login"}/>;
-   // }
+    else{ 
+     return <ForwardButton press={this.onButtonPress.bind(this)} place ={'TwoF'}/>
+    }
   }
 
   render() {
@@ -65,16 +65,20 @@ class SignUpForm extends Component {
     return (
     <SafeAreaView style ={{width:'100%', height:'100%', backgroundColor:'white'}} >
      <HomeHeader2 navigate={this.props.navigation.goBack}/>
-      <KeyboardAvoidingView style={{width:'90%',margin:'5%',marginTop:'30%'}} behavior = {(Platform.OS === 'ios') ? 'position' : 'height'}>
+      <KeyboardAvoidingView style={{width:'90%',margin:'5%',marginTop:'20%'}} behavior = {(Platform.OS === 'ios') ? 'position' : 'height'}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
        
         <View style = {styles.viewStyle}>
         <Image
-                style={{height: 100, alignSelf:'center', width:100, marginRight:15,}}
+                style={{height: 100, alignSelf:'center', width:100}}
                 source={require('../.././images/logoicon.png')}
                 resizeMode = 'contain'
                 />
+                <View>
+                <Text style={{fontSize:24}}>EasyVote</Text>
+                <Text style={{fontSize:14}}>Login</Text>
+                </View>
         </View>
 
         <Card>
@@ -92,7 +96,7 @@ class SignUpForm extends Component {
             {this.next()}
        {/* </View> */}
        <View >
-      <ForwardButton press={this.onButtonPress.bind(this)} place ={'TwoF'}/>
+      {this.renderButton()}
        
        </View>
        </View>
@@ -112,8 +116,8 @@ class SignUpForm extends Component {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
       backgroundColor: '#F4F2F3',
       width: '100%',
 
@@ -122,6 +126,9 @@ const styles = StyleSheet.create({
        // height: '100%',
        marginTop: '20%',
         width: '100%',
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center'
     },
    
     
@@ -133,7 +140,8 @@ const styles = StyleSheet.create({
        email: state.auth.email,
        password: state.auth.password,
         logintrigger:state.auth.logintrigger,
-        Active:state.auth.Active
+        Active:state.auth.Active,
+        loading:state.auth.loading
        }
 };
 

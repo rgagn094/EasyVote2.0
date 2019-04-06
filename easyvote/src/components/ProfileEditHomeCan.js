@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text,View, StyleSheet,Image,TouchableOpacity} from 'react-native'
+import {Text,View, StyleSheet,Image,Platform,TouchableOpacity} from 'react-native'
 //import Swipeout from 'react-native-swipeout';
 //import {delpro} from '../actions';
 //import {connect} from 'react-redux';
@@ -12,11 +12,11 @@ class  ProfileEditHomeCan extends React.Component{
           renderImage(){
               
             return(
-                <Image
-                style={{height: 60, width:60, marginRight:15, borderRadius:30}}
-                source={require('../.././images/profile.png')}
-                resizeMode = 'contain'
-                />
+            <Image
+                    style={{height: 60, marginRight:15, width:60,borderRadius: Platform.OS === 'ios' ? 30 : 50}}
+                    source={{uri:this.props.image}}
+                    resizeMode = 'contain'
+                    />
             );
         } 
           
@@ -29,7 +29,7 @@ class  ProfileEditHomeCan extends React.Component{
 
         return(
             // <Swipeout {...swipeSettings} >
-            <TouchableOpacity onPress={() =>{this.props.press.navigate('HomeCan', {Id: this.props.Id,FirstName:this.props.Name,});}} style={styles.listStyle} >
+            <TouchableOpacity onPress={() =>{this.props.press.navigate('HomeCan', {CanId: this.props.CanId,ElecId: this.props.ElecId,UserId:this.props.UserId,description:this.props.description,image:this.props.image,FirstName:this.props.Name});}} style={styles.listStyle} >
                 {this.renderImage()}
                 <View  /* style={{width:"80%"}} */>
                 <Text numberOfLines={1} style={{fontWeight:'bold', fontSize:18}}>

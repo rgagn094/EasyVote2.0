@@ -33,7 +33,9 @@ class LoginFormtwo extends Component {
 
   next(){
     if(this.props.logintrigger){
-        this.props.navigation.navigate('Profile',{Id: this.props.Active});;
+      console.log(this.props.Active);
+      
+        this.props.navigation.navigate('LogOrSign');
     }
 }
 
@@ -74,8 +76,8 @@ onLicenseChanged(text){
       const {FirstName,LastName,number,email} = this.state;
        const {password,password2,Licence,fourD} = this.props;
        console.log(FirstName,LastName,number,email,password,password2,Licence,fourD);
-       this.props.navigation.navigate('Profile');
-     // this.props.Signup({FirstName,LastName,number,email,password,password2,Licence,fourD});
+      // this.props.navigation.navigate('Profile');
+      this.props.Signup({FirstName,LastName,number,email,password,password2,Licence,fourD});
       
      }
 
@@ -90,12 +92,12 @@ onLicenseChanged(text){
   } */
 
   renderButton(){
-    /* if(this.props.loading){
-      return <Spinner size="large"/>;
+     if(this.props.loading){
+      return <Spinner size="small"/>;
     }
-    else{ */
-     return <FormButton /*press={this.onButtonPress.bind(this)}*/ val = {"Login"}/>;
-   // }
+    else{ 
+     return <ForwardButton press={this.onButtonPress.bind(this)} place ={'Profile'}/>
+    }
   }
 
   render() {
@@ -135,7 +137,7 @@ onLicenseChanged(text){
         </Card>
        {/* </View> */}
        <View >
-      <ForwardButton press={this.onButtonPress.bind(this)} place ={'Profile'}/>
+       {this.renderButton()}
        
        </View>
        {this.next()}
@@ -184,6 +186,7 @@ const styles = StyleSheet.create({
        fourD:state.auth.fourD,
        logintrigger:state.auth.logintrigger,
        Active:state.auth.Active,
+       loading:state.auth.loading
        
        
     }

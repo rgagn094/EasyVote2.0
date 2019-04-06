@@ -20,6 +20,7 @@ class SettingsEditForm extends Component {
   constructor(props) {
     super(props);
   this.state = {
+    navigate:this.props.navigation,
     profiles: [
       {
         Name: "Donald Trump",
@@ -69,6 +70,7 @@ class SettingsEditForm extends Component {
       } 
   ],
 }
+
   }
   
 
@@ -110,9 +112,8 @@ class SettingsEditForm extends Component {
     <SafeAreaView style={{width:'100%', height:'100%',backgroundColor:'white', alignItems:'center', marginTop:'5%'}}>
     <HomeHeader navigate={this.props.navigation.goBack} ti='Settings'/>
     <View style={{width:'94%',borderWidth:1,borderRadius:20,marginBottom:30}}>
-      <ProfileEditHome Name='How To Vote' editImage='../.././images/profile.png'/>
-    <ProfileEditHome Name='Get Help' editImage='../.././images/profile.png'/>  
-    <ProfileEditHome Name='Rate Us' editImage='../.././images/profile.png'/>  
+      <ProfileEditHome place ={'LogOrSign'} press = {this.state.navigate} Name='Log Out' editImage='../.././images/settings.png'/>
+     
     </View>
       </SafeAreaView>
       );

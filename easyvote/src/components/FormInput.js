@@ -17,6 +17,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '100%',
         height: '100%',
+        paddingLeft:10,
+        borderRadius:5,
+        fontSize:18,
     },
     viewStyle: {
         height: '100%',

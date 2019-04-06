@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 import {Text} from 'react-native';
-import {HeaderSet2, HomeHeader3} from './index';
+import {HeaderSet2,Spinner, HomeHeader3} from './index';
 import {connect} from 'react-redux';
 //import {connect} from 'react-redux';
 import ProfileEditHomeicon from './ProfileEditHomeicon';
@@ -23,7 +24,7 @@ class ElectionsListForm extends Component {
      // const { navigate } = props.navigation;
         super(props);
       this.state = {
-       //Id:  this.props.navigation.state.params.Id,
+       Id:  this.props.navigation.state.params.Id,
         navigate:this.props.navigation,
         profiles: [
           {
@@ -58,8 +59,8 @@ class ElectionsListForm extends Component {
 
 
   componentDidMount(){
-    //let valll = this.state.Id;
-   // this.props.Fetchelection({valll});
+    let valll = this.state.Id;
+   this.props.Fetchelection();
 }
 
 next(){
@@ -69,22 +70,22 @@ next(){
 }
 
   getProfiles(){
-    //return  this.props.Elections;
-    return  this.state.profiles;
+    return  this.props.elections;
+   // return  this.state.profiles;
   }
     
 
-  renderRow(item){
-    return <ProfileEditHomeicon  press = {this.state.navigate} Id = {this.props.Active} place ={'CandidateList'}  Name = {item.Name} /> 
+  renderRow(item,sectionID, rowID){
+    return <ProfileEditHomeicon Candidates ={item.candidates}  press = {this.state.navigate} UserId={this.state.Id} Id = {item._id} place ={'CandidateList'}  Name = {item.title} /> 
       
           
    }
 
   renderButton(){ 
-   /*  if(this.props.loading){
+    if(this.props.loading){
       return <Spinner size="large"/>;
     }
-    else{ */
+    else{ 
     const ds = new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
     });
@@ -97,7 +98,7 @@ next(){
      renderRow={this.renderRow}
      />
       ;
-    //}
+    }
   }
 
   render() {
@@ -133,12 +134,12 @@ const styles = StyleSheet.create({
 
   const mapStateToProps = state =>{
     
-  // const elections = _.map(state.auth.Elections,(Val,uid) =>{
-   //   return {...Val};
-  //  });
+   const elections = _.map(state.auth.Elections,(Val,uid) =>{
+      return {...Val};
+    });
   
   
-  //return {elections,loading:state.pro.loading1};
+  return {elections,loading:state.auth.loading};
   };
 
-export default  (ElectionsListForm) ; //connect(mapStateToProps,{Fetchelection})
+export default  connect(mapStateToProps,{Fetchelection}) (ElectionsListForm) ;
