@@ -16,11 +16,13 @@ async function asyncForEach(array, callback){
 /*
 Get analytics for a particular election
 tags:
-  count:    Returns the total number of votes for each candidate
+  count:          Returns total votes received
+  countByCandidate:    Returns the total number of votes for each candidate
   gender:   Returns the votes by gender for each candidate
   avgAge:   Returns the average age of the voters for each candidate
   ageGroup: Returns the number of voters for each age group (18-24, 25-44, 45-64, 65+)
   province: Returns the number of voters of the top 5 most voted from provinces or territory
+  cities:   Returns the number of votes from each city
 */
 router.get('/:electionID/:tag', async function(req,res){
   console.log("Request recevied for analytic");
@@ -43,7 +45,7 @@ router.get('/:electionID/:tag', async function(req,res){
   }
 
   // Check if election is closed ie: all votes submitted
-  if(req.tag == "count" || req.tag == "gender" || req.tag == "avgAge"){
+  if(req.tag == "countByCandidate" || req.tag == "gender" || req.tag == "avgAge"){
     if(election.endDate.getTime() > Date.now()){
       console.log("Cannot provide this analytic until end of voting:", election.endDate);
       res.status(400).send();
@@ -79,11 +81,25 @@ router.get('/:electionID/:tag', async function(req,res){
 
   switch(req.params.tag){
     case "count":
+      description = "Total number of votes received";
+      try{
+        let votes = await Vote.find({electionID: req.params.electionID, authenticated: true}).exec();
+        data.push(votes.length);
+        labels.push("Total Votes Received");
+      } catch(err){
+        console.log(err);
+        res.status(500).send();
+        return;
+      }
+      break;
+
+    case "countByCandidate":
       description = "Total number of votes received by each candidate";
       // For all candidates
       await asyncForEach(election.candidates,async function(candidate){
         // Get all votes for each candidate
         var name = candidate.firstName + ' ' + candidate.lastName;
+        name = name.toLowerCase()
         try{
           let votes = await Vote.find({electionID: req.params.electionID, candidate: name, authenticated: true}).exec();
           console.log("Total number of votes found: %d", votes.length);
@@ -177,42 +193,57 @@ router.get('/:electionID/:tag', async function(req,res){
 
     case "province":
       let provinceMap = new Map();
-      provinceMap.set("BC",0);
-      provinceMap.set("AB",0);
-      provinceMap.set("SK",0);
-      provinceMap.set("MB",0);
-      provinceMap.set("ON",0);
-      provinceMap.set("QC",0);
-      provinceMap.set("NB",0);
-      provinceMap.set("NS",0);
-      provinceMap.set("PE",0);
-      provinceMap.set("NL",0);
-      provinceMap.set("YT",0);
-      provinceMap.set("NT",0);
-      provinceMap.set("NU",0);
+      provinceMap.set("British Columbia",0);
+      provinceMap.set("Alberta",0);
+      provinceMap.set("Saskatchewan",0);
+      provinceMap.set("Manitoba",0);
+      provinceMap.set("Ontario",0);
+      provinceMap.set("Quebec",0);
+      provinceMap.set("New Brunswick",0);
+      provinceMap.set("Nova Scotia",0);
+      provinceMap.set("Prince Edward Island",0);
+      provinceMap.set("Newfoundland and Labrador",0);
+      provinceMap.set("Yukon",0);
+      provinceMap.set("Northwest Territories",0);
+      provinceMap.set("Nunavut",0);
 
-      description = "Number of voters from top 5 most voted from provinces and territories";
+      description = "Number of voters from provinces and territories";
       try{
         let votes = await Vote.find({electionID: req.params.electionID, authenticated: true}).exec();
         for (let index = 0; index < votes.length; index++){   // Count votes for each province
-          let code = votes[index].locationCode.state;
-          provinceMap.set(code,(provinceMap.get(code)+1));
+          let state = votes[index].demographics.state;
+          provinceMap.set(state,(provinceMap.get(state)+1));
         }
-        for (let count = 0; count < 5; count++){
-          var highestKey = "";
-          var highestValue = -1;
-          for (var [key, value] of provinceMap.entries()){
-            if(value > highestValue){
-              highestValue = value;
-              highestKey = key;
-            }
-          }
-          data.push(highestValue);
-          labels.push(highestKey);
-          provinceMap.delete(highestKey);
+        for (var [key, value] of provinceMap.entries()){
+          data.push(value);
+          labels.push(key);
         }
         console.log(data);
         console.log(labels);
+      } catch(err){
+        console.log(err);
+        res.status(500).send();
+        return;
+      }
+      break;
+
+    case "cities":
+      let cityMap = new Map();
+      description = "Number of votes from each city";
+      try{
+        let votes = await Vote.find({electionID: req.params.electionID, authenticated: true}).exec();
+	for (let index = 0; index < votes.length; index++){
+          let city = votes[index].demographics.city;
+          if (typeof cityMap.get(city) == 'undefined'){
+            cityMap.set(city, 0);
+          } else {
+            cityMap.set(city, (cityMap.get(city)+1));
+          }
+        }
+        for (var [key, value] of cityMap.entries()){
+          data.push(value);
+          labels.push(key);
+        }
       } catch(err){
         console.log(err);
         res.status(500).send();

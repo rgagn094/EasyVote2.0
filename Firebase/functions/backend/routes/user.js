@@ -31,29 +31,30 @@ router.post('/login', async (req,res)=>{ //use of javascript async/await for syn
         let {email,password, verificationMethod} = req.body; //get password and email from form
 		email = email.toLowerCase();
 		console.log(password,email);
-        //check if email exist.
-        let user = await User.findOne({email}).exec();
-        if (!user) {
-        	console.log("error no user");
-            return res.send({error: 'User authentication failed'}) //return if user does not exist
-        }
-        console.log("User found");
-        user.meta.lastLoginAttempt = Date.now(); //updates last login attempt
-        //check if user's password matches stored hash using bcrypt
-        let hash = user.password; //get hash from database
-        let passwordMatch = bcrypt.compareSync(password, hash) //compare
-        if (!passwordMatch){
-            return res.send({error:"User authentication failed"})
-        }
-        console.log("Password matched");
-        console.log(verificationMethod)
-        //Verify user with 2FA via email or phone
+    //check if email exist.
+    let user = await User.findOne({email}).exec();
+    if (!user) {
+    	console.log("error no user");
+        return res.status(400).json({error: 'User authentication failed'}) //return if user does not exist
+    }
+    console.log("User found");
+    console.log(user.id);
+    user.meta.lastLoginAttempt = Date.now(); //updates last login attempt
+    //check if user's password matches stored hash using bcrypt
+    let hash = user.password; //get hash from database
+    let passwordMatch = bcrypt.compareSync(password, hash) //compare
+    if (!passwordMatch){
+        return res.status(400).json({error:"User authentication failed"})
+    }
+    console.log("Password matched");
+    console.log(verificationMethod)
+    //Verify user with 2FA via email or phone
 		if (verificationMethod === 0){ //send pin through email
 
 		}else if(verificationMethod == 1){ //send pin through phone
 			//check if phone number exist
 			if (!(user.phone.number && user.phone.areaCode)) {
-            	return res.send({error:"User does not have a valid phone"})
+            	return res.status(400).json({error:"User does not have a valid phone"})
 			}
 			console.log("trying to send verification")
 			//Format phoneNumber
@@ -64,21 +65,21 @@ router.post('/login', async (req,res)=>{ //use of javascript async/await for syn
 				//pin_expiry:240
 				if(err){
 					console.log(err);
-					return res.send({error: "Please try again."})
+					return res.status(500).json({error: "Please try again."})
 				}else{
 					if(result.status == '0'){
 						console.log("sent code")
 						//store verification in user . return userid
 						user.meta.tokenPasscode = result.request_id; //updates token
-						return res.send({message:"PIN sent", userID: user._id, verificationMethod})
+						return res.status(200).send(user.id);
 					}else{
 						console.log(result.error_text)
-						return res.send({error: result.error_text, verificationMethod});
+						return res.status(500).send(user.id);
 					}
 				}
 			})
 		}else{
-			return res.send({error:"could not send verification."})
+			return res.status(500).json({error:"could not send verification."});
 		}
 
     }
@@ -90,33 +91,37 @@ router.post('/login', async (req,res)=>{ //use of javascript async/await for syn
 
 // 2FA Verification
 router.post('/verify', async (req,res)=>{
+  console.log("Request to verify login");
 	let pin = req.body.pin;
 	let userID = req.body.userID;
+  console.log(userID);
 	let verificationMethod = req.body.verificationMethod;  //0 for Phone and 1 for Email
 
 	let user = await User.findById(userID).exec();
 	if(!user) {
-		return res.end({error: "User account does not exist"})
+		return res.status(400).json({error: "User account does not exist"});
 	}
 	let requestID = user.meta.tokenPasscode;
 	//verify PIN
-	if(verificationMethod === '1'){
+	if(verificationMethod === '0'){
 
 	}
-	else if (verificationMethod === "0"){ //phoneVerification
+	else if (verificationMethod === "1"){ //phoneVerification
 		nexmo.verify.check({requestID, pin}, (err,result)=>{
 			if (err){
 				//error
 				console.log(err);
-				res.send({error:err, errorCode: 0})
+				res.status(500).json({error:err, errorCode: 0})
 			}
 			else {
 				if (result && result.status === '0'){
-					res.send({message:"Account Verified"})
+          console.log("Account verified")
+					res.status(200).json({message:"Account Verified"})
 				}
 				else {
 					//wrong pin
-					res.send({error:"Wrong PIN", errorCode: 100})
+          console.log("wrong pin");
+					res.status(400).json({error:"Wrong PIN", errorCode: 100})
 				}
 			}
 		})
@@ -188,7 +193,7 @@ router.post('/register', [
 		number,
 		areaCode
 		} = req.body;
-
+    email = email.toLowerCase();
 
 	//Validation Check
 	const errors = validationResult(req); //return validation object with errors
@@ -204,7 +209,14 @@ router.post('/register', [
 	const saltRounds = 13;
 	let hash = bcrypt.hashSync(password,saltRounds);
 
-
+  // Simulate receiving age and gender from gov. server
+  if (Date.now() % 2) {
+    gender = 'male';
+  } else {
+    gender = 'female';
+  }
+  birthDate = new Date("1989-03-25T12:00:00Z");
+  
 	//TODO: get meta data for user
 
 	/*

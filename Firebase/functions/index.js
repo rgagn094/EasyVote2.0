@@ -41,7 +41,7 @@ app.get('*', function(req, res){
   // respond with html page
   if (req.accepts('html')) {
     res.status(404);
-    res.sendFile(path.join(__dirname + '/404.html'));
+    res.sendFile(path.join(__dirname + '/assets/404.html'));
   }
   else if (req.accepts('json')) {
     // Respond with json.

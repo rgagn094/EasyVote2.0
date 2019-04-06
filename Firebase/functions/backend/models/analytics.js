@@ -25,7 +25,7 @@ AnalyticsSchema = new Schema({
   },
   tag: {        // Short tag to identify type of analytic
     type: String,
-    enum: ['count', 'gender', 'avgAge', 'ageGroup', 'province'],
+    enum: ['count', 'countByCandidate', 'gender', 'avgAge', 'ageGroup', 'province', 'cities'],
     required: true
   }
 });

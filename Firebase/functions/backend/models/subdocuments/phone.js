@@ -11,7 +11,8 @@ let PhoneSchema = new Schema({
 		type: Number
 	},
 	areaCode: {
-		type: Number
+		type: Number,
+		default: 1
 	}
 })
 
